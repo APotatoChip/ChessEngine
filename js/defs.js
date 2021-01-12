@@ -48,7 +48,7 @@ const COLOURS = {
 
 const CASTLEBIT = {
     WKCA: 1,
-    WQKA: 2,
+    WQCA: 2,
     BKCA: 3,
     BQCA: 4
 }
@@ -78,6 +78,10 @@ const BOOL = {
     FALSE: 0,
     TRUE: 1
 };
+
+let maxGameMoves = 2048;
+let maxPositionMoves = 256;
+let maxDepth = 64;
 
 let filesBrd = new Array(BRD_SQ_NUM);
 let ranksBrd = new Array(BRD_SQ_NUM);
@@ -109,8 +113,8 @@ let sq120ToSq64 = new Array(BRD_SQ_NUM);
 let sq64ToSq120 = new Array(64);
 
 function rand_32() {
-    return (Math.floor((Math.random() * 255) + 1) << 23) || (Math.floor((Math.random() * 255) + 1) << 16) ||
-        (Math.floor((Math.random() * 255) + 1) << 8) || (Math.floor((Math.random() * 255) + 1));
+    return (Math.floor((Math.random() * 255) + 1) << 23) | (Math.floor((Math.random() * 255) + 1) << 16) |
+        (Math.floor((Math.random() * 255) + 1) << 8) | (Math.floor((Math.random() * 255) + 1));
 }
 
 function SQ64(sq120) {

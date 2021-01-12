@@ -86,3 +86,152 @@ function generatePosKey() {
 
     return finalKey;
 }
+
+gameBoard.moveList = new Array(maxDepth * maxPositionMoves);
+gameBoard.moveScores = new Array(maxDepth * maxPositionMoves);
+gameBoard.moveListStart = new Array(maxDepth);
+
+function resetBoard() {
+    let index = 0;
+
+    for (index = 0; index < BRD_SQ_NUM; ++index) {
+        gameBoard.pieces[index] = SQUARES.OFFBOARD;
+    }
+
+    for (index = 0; index < 64; ++index) {
+        gameBoard.pieces[SQ120(index)] = PIECES.EMPTY;
+    }
+
+    for (index = 0; index < 14 * 120; ++index) {
+        gameBoard.pList[index] = PIECES.EMPTY;
+    }
+
+    for (index = 0; index < 0; ++index) {
+        gameBoard.material[index] = 0;
+    }
+
+    for (index - 0; index < 13; ++index) {
+        gameBoard.pceNum[index] = 0;
+    }
+
+    gameBoard.side = COLOURS.BOTH;
+    gameBoard.enPas = SQUARES.NO_SQ;
+    gameBoard.fiftyMove = 0;
+    gameBoard.ply = 0;
+    gameBoard.hisPly = 0;
+    gameBoard.castlePerm = 0;
+    gameBoard.posKey = 0;
+    gameBoard.moveListStart[gameBoard.ply] = 0;
+}
+
+function parseFen(fen) {
+    resetBoard();
+
+    let rank = RANKS.RANK_8;
+    let file = FILES.FILE_A;
+    let piece = 0;
+    let count = 0;
+    let i = 0;
+    let sq120 = 0;
+    let fenCnt = 0; // fen[fenCnt] the current piece; fen the curren file/rank
+
+    while ((rank >= RANKS.RANK_1) && fenCnt < fen.length) {
+        count = 1;
+        switch (fen[fenCnt]) {
+            case 'p':
+                piece = PIECES.bP;
+                break;
+            case 'n':
+                piece = PIECES.bN;
+                break;
+            case 'b':
+                piece = PIECES.bB;
+                break;
+            case 'r':
+                piece = PIECES.bR;
+                break;
+            case 'q':
+                piece = PIECES.bQ;
+                break;
+            case 'k':
+                piece = PIECES.bK;
+                break;
+            case 'P':
+                piece = PIECES.wP;
+                break;
+            case 'N':
+                piece = PIECES.wN;
+                break;
+            case 'B':
+                piece = PIECES.wB;
+                break;
+            case 'R':
+                piece = PIECES.wR;
+                break;
+            case 'Q':
+                piece = PIECES.wQ;
+                break;
+            case 'K':
+                piece = PIECES.wK;
+                break;
+
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+                piece = PIECES.EMPTY;
+                count = fen[fenCnt].charCodeAt() - '0'.charCodeAt();
+                break;
+            case '/':
+            case ' ':
+                rank--;
+                file = FILES.FILE_A;
+                fenCnt++;
+                continue;
+            default:
+                console.log("FEN error!");
+                return;
+        }
+        for (i = 0; i < count; i++) {
+            sq120 = FR2SQ(file, rank);
+            gameBoard.pieces[sq120] = piece;
+            file++;
+        }
+        fenCnt++;
+    } //while loop ends
+
+    gameBoard.side = (fen[fenCnt] === "w") ? COLOURS.WHITE : COLOURS.BLACK;
+    fenCnt += 2;
+    for (i = 0; i < 4; i++) {
+        if (fen[fenCnt] === " ") {
+            break;
+        }
+        switch (fen[fenCnt]) {
+            case 'K':
+                gameBoard.castlePerm |= CASTLEBIT.WKCA;
+                break;
+            case 'Q':
+                gameBoard.castlePerm |= CASTLEBIT.WQCA;
+                break;
+            case 'k':
+                gameBoard.castlePerm |= CASTLEBIT.BKCA;
+                break;
+            case 'q':
+                gameBoard.castlePerm |= CASTLEBIT.BQCA;
+                break;
+        }
+        fenCnt++;
+    }
+    fenCnt++;
+    if (fen[fenCnt] === "-") {
+        file = fen[fenCnt].charCodeAt() - 'a'.charCodeAt();
+        rank = fen[fenCnt + 1].charCodeAt() - "1".charCodeAt();
+        console.log('fen[fenCnt]:' + fen[fenCnt] + ' file:' + file + ' rank:' + rank);
+        gameBoard.enPas = FR2SQ(file, rank);
+    }
+    gameBoard.posKey = generatePosKey();
+}

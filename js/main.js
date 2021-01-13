@@ -1,39 +1,8 @@
 $(function() {
     init();
     console.log("Main Init Called");
-
-    /**
-     * unique?
-     * piece on sq
-     * side
-     * castle
-     * enPas
-     * 
-     * posKey ^= ranNum for all pcs on sq
-     * posKey^=ranNum side .. so on
-     */
-
-    /*Example */
-
-    let piece1 = rand_32();
-    let piece2 = rand_32();
-    let piece3 = rand_32();
-    let piece4 = rand_32();
-
-    let key = 0;
-    key ^= piece1;
-    key ^= piece2;
-    key ^= piece3;
-    key ^= piece4;
-
-    console.log("key:" + key.toString(16));
-    key ^= piece1;
-    console.log("piece1 out key:" + key.toString(16));
-    key = 0;
-    key ^= piece2;
-    key ^= piece3;
-    key ^= piece4;
-    console.log("build no piece1:" + key.toString(16));
+    parseFen(startFen);
+    printBoard();
 
 });
 
@@ -100,6 +69,38 @@ function initSq120To64() {
         }
     }
 }
+/**
+ * unique?
+ * piece on sq
+ * side
+ * castle
+ * enPas
+ * 
+ * posKey ^= ranNum for all pcs on sq
+ * posKey^=ranNum side .. so on
+ */
+
+/*Example */
+
+let piece1 = rand_32();
+let piece2 = rand_32();
+let piece3 = rand_32();
+let piece4 = rand_32();
+
+let key = 0;
+key ^= piece1;
+key ^= piece2;
+key ^= piece3;
+key ^= piece4;
+
+console.log("key:" + key.toString(16));
+key ^= piece1;
+console.log("piece1 out key:" + key.toString(16));
+key = 0;
+key ^= piece2;
+key ^= piece3;
+key ^= piece4;
+console.log("build no piece1:" + key.toString(16));
 
 function init() {
     console.log("Init called");

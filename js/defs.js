@@ -86,6 +86,13 @@ let maxDepth = 64;
 let filesBrd = new Array(BRD_SQ_NUM);
 let ranksBrd = new Array(BRD_SQ_NUM);
 
+let startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+let pceChar = ".PNBRQKpnbrqk";
+let sideChar = "wb-";
+let rankChar = "12345678";
+let fileChar = "abcdefgh"
+
 function FR2SQ(f, r) {
     return ((21 + (f)) + ((r) * 10));
 }

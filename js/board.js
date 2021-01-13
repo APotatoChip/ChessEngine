@@ -59,6 +59,45 @@ gameBoard.pList = new Array(14 * 10);
  * wK 20 -> 29
  */
 
+function printBoard() {
+    let sq, file, rank, piece;
+    console.log("\nGame Board:\n");
+
+    for (rank = RANKS.RANK_8; rank >= RANKS.RANK_1; rank--) {
+        let line = (rankChar[rank] + " ");
+        for (file = FILES.FILE_A; file <= FILES.FILE_H; file++) {
+            sq = FR2SQ(file, rank);
+            piece = gameBoard.pieces[sq];
+            line += (" " + pceChar[piece] + " ");
+        }
+        console.log(line);
+    }
+    console.log("");
+    let line = " ";
+    for (file = FILES.FILE_A; file <= FILES.FILE_H; file++) {
+        line += (" " + fileChar[file] + " ");
+    }
+    console.log(line);
+    console.log("side:" + sideChar[gameBoard.side]);
+    console.log("enPas:" + gameBoard.enPas);
+    line = "";
+
+    if (gameBoard.castlePerm & CASTLEBIT.WKCA) line += "K";
+    if (gameBoard.castlePerm & CASTLEBIT.WQCA) line += "Q";
+    if (gameBoard.castlePerm & CASTLEBIT.BKCA) line += "k";
+    if (gameBoard.castlePerm & CASTLEBIT.BQCA) line += "q";
+
+    console.log("castle:" + line);
+    console.log("key:" + gameBoard.posKey.toString(16));
+
+    /**
+     * a8 -> h8
+     * a7 -> h7
+     * ........
+     * a1 -> h1
+     */
+}
+
 gameBoard.posKey = 0;
 
 function generatePosKey() {

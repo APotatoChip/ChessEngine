@@ -131,3 +131,7 @@ function SQ64(sq120) {
 function SQ120(sq64) {
     return sq64ToSq120[(sq64)];
 }
+
+function pceIndex(pce, pceNum) {
+    return (pce * 10 + pceNum);
+}

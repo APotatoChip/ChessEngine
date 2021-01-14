@@ -165,14 +165,10 @@ function generatePosKey() {
     return finalKey;
 }
 
+function updateMaterialList() {
 
+    var piece, sq, index, colour;
 
-function resetBoard() {
-    var index = 0;
-
-    for (index = 0; index < BRD_SQ_NUM; ++index) {
-        gameBoard.pieces[index] = SQUARES.OFFBOARD;
-    }
 
     for (index = 0; index < 64; ++index) {
         gameBoard.pieces[SQ120(index)] = PIECES.EMPTY;
@@ -184,6 +180,27 @@ function resetBoard() {
 
     for (index = 0; index < 2; ++index) {
         gameBoard.material[index] = 0;
+    }
+
+    for (index = 0; index < 64; ++index) {
+        sq = SQ120(index);
+        piece = gameBoard.pieces[sq];
+        if (piece != PIECES.EMPTY) {
+            colour = PieceCol[piece];
+
+            gameBoard.material[colour] += PieceVal[piece];
+
+            gameBoard.pList[pceIndex(piece, gameBoard.pceNum[piece])] = sq;
+            gameBoard.pceNum[piece]++;
+        }
+    }
+}
+
+function resetBoard() {
+    var index = 0;
+
+    for (index = 0; index < BRD_SQ_NUM; ++index) {
+        gameBoard.pieces[index] = SQUARES.OFFBOARD;
     }
 
     for (index - 0; index < 13; ++index) {
@@ -316,4 +333,5 @@ function parseFen(fen) {
         gameBoard.enPas = FR2SQ(file, rank);
     }
     gameBoard.posKey = generatePosKey();
+    updateMaterialList();
 }

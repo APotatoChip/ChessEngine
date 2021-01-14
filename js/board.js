@@ -30,6 +30,11 @@ gameBoard.castlePerm = 0;
 gameBoard.material = new Array(2); // WHITE/BLACK material of pieces
 gameBoard.pceNum = new Array(13); //indexed by PIECES; keep how many of a type we have
 gameBoard.pList = new Array(14 * 10);
+gameBoard.posKey = 0;
+
+gameBoard.moveList = new Array(maxDepth * maxPositionMoves);
+gameBoard.moveScores = new Array(maxDepth * maxPositionMoves);
+gameBoard.moveListStart = new Array(maxDepth);
 
 
 /** 
@@ -60,11 +65,11 @@ gameBoard.pList = new Array(14 * 10);
  */
 
 function printBoard() {
-    let sq, file, rank, piece;
+    var sq, file, rank, piece;
     console.log("\nGame Board:\n");
 
     for (rank = RANKS.RANK_8; rank >= RANKS.RANK_1; rank--) {
-        let line = (rankChar[rank] + " ");
+        var line = (rankChar[rank] + " ");
         for (file = FILES.FILE_A; file <= FILES.FILE_H; file++) {
             sq = FR2SQ(file, rank);
             piece = gameBoard.pieces[sq];
@@ -72,11 +77,13 @@ function printBoard() {
         }
         console.log(line);
     }
+
     console.log("");
-    let line = " ";
+    var line = "  ";
     for (file = FILES.FILE_A; file <= FILES.FILE_H; file++) {
         line += (" " + fileChar[file] + " ");
     }
+
     console.log(line);
     console.log("side:" + sideChar[gameBoard.side]);
     console.log("enPas:" + gameBoard.enPas);
@@ -86,7 +93,6 @@ function printBoard() {
     if (gameBoard.castlePerm & CASTLEBIT.WQCA) line += "Q";
     if (gameBoard.castlePerm & CASTLEBIT.BKCA) line += "k";
     if (gameBoard.castlePerm & CASTLEBIT.BQCA) line += "q";
-
     console.log("castle:" + line);
     console.log("key:" + gameBoard.posKey.toString(16));
 
@@ -98,13 +104,46 @@ function printBoard() {
      */
 }
 
-gameBoard.posKey = 0;
+/**
+ * unique?
+ * piece on sq
+ * side
+ * castle
+ * enPas
+ * 
+ * posKey ^= ranNum for all pcs on sq
+ * posKey^=ranNum side .. so on
+ */
+
+/*Example 
+
+let piece1 = rand_32();
+let piece2 = rand_32();
+let piece3 = rand_32();
+let piece4 = rand_32();
+
+let key = 0;
+key ^= piece1;
+key ^= piece2;
+key ^= piece3;
+key ^= piece4;
+
+console.log("key:" + key.toString(16));
+key ^= piece1;
+console.log("piece1 out key:" + key.toString(16));
+key = 0;
+key ^= piece2;
+key ^= piece3;
+key ^= piece4;
+console.log("build no piece1:" + key.toString(16));
+
+*/
 
 function generatePosKey() {
 
-    let sq = 0;
-    let finalKey = 0;
-    let piece = PIECES.EMPTY;
+    var sq = 0;
+    var finalKey = 0;
+    var piece = PIECES.EMPTY;
 
     for (sq = 0; sq < BRD_SQ_NUM; ++sq) {
         piece = gameBoard.pieces[sq];
@@ -126,12 +165,10 @@ function generatePosKey() {
     return finalKey;
 }
 
-gameBoard.moveList = new Array(maxDepth * maxPositionMoves);
-gameBoard.moveScores = new Array(maxDepth * maxPositionMoves);
-gameBoard.moveListStart = new Array(maxDepth);
+
 
 function resetBoard() {
-    let index = 0;
+    var index = 0;
 
     for (index = 0; index < BRD_SQ_NUM; ++index) {
         gameBoard.pieces[index] = SQUARES.OFFBOARD;
@@ -145,7 +182,7 @@ function resetBoard() {
         gameBoard.pList[index] = PIECES.EMPTY;
     }
 
-    for (index = 0; index < 0; ++index) {
+    for (index = 0; index < 2; ++index) {
         gameBoard.material[index] = 0;
     }
 
@@ -163,7 +200,10 @@ function resetBoard() {
     gameBoard.moveListStart[gameBoard.ply] = 0;
 }
 
+//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+
 function parseFen(fen) {
+
     resetBoard();
 
     let rank = RANKS.RANK_8;
@@ -225,6 +265,7 @@ function parseFen(fen) {
                 piece = PIECES.EMPTY;
                 count = fen[fenCnt].charCodeAt() - '0'.charCodeAt();
                 break;
+
             case '/':
             case ' ':
                 rank--;
@@ -235,6 +276,7 @@ function parseFen(fen) {
                 console.log("FEN error!");
                 return;
         }
+
         for (i = 0; i < count; i++) {
             sq120 = FR2SQ(file, rank);
             gameBoard.pieces[sq120] = piece;
@@ -243,6 +285,7 @@ function parseFen(fen) {
         fenCnt++;
     } //while loop ends
 
+    //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     gameBoard.side = (fen[fenCnt] === "w") ? COLOURS.WHITE : COLOURS.BLACK;
     fenCnt += 2;
     for (i = 0; i < 4; i++) {

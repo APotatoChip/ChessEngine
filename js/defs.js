@@ -79,19 +79,19 @@ const BOOL = {
     TRUE: 1
 };
 
-let maxGameMoves = 2048;
-let maxPositionMoves = 256;
-let maxDepth = 64;
+var maxGameMoves = 2048;
+var maxPositionMoves = 256;
+var maxDepth = 64;
 
-let filesBrd = new Array(BRD_SQ_NUM);
-let ranksBrd = new Array(BRD_SQ_NUM);
+var filesBrd = new Array(BRD_SQ_NUM);
+var ranksBrd = new Array(BRD_SQ_NUM);
 
-let startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+var startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-let pceChar = ".PNBRQKpnbrqk";
-let sideChar = "wb-";
-let rankChar = "12345678";
-let fileChar = "abcdefgh"
+var pceChar = ".PNBRQKpnbrqk";
+var sideChar = "wb-";
+var rankChar = "12345678";
+var fileChar = "abcdefgh"
 
 function FR2SQ(f, r) {
     return ((21 + (f)) + ((r) * 10));
@@ -112,12 +112,12 @@ var PieceRookQueen = [BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE,
 var PieceBishopQueen = [BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE];
 var PieceSlides = [BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE];
 
-let pieceKeys = new Array(14 * 120);
-let sideKey;
-let castleKeys = new Array(16);
+var pieceKeys = new Array(14 * 120);
+var sideKey;
+var castleKeys = new Array(16);
 
-let sq120ToSq64 = new Array(BRD_SQ_NUM);
-let sq64ToSq120 = new Array(64);
+var sq120ToSq64 = new Array(BRD_SQ_NUM);
+var sq64ToSq120 = new Array(64);
 
 function rand_32() {
     return (Math.floor((Math.random() * 255) + 1) << 23) | (Math.floor((Math.random() * 255) + 1) << 16) |

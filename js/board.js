@@ -326,7 +326,7 @@ function parseFen(fen) {
         fenCnt++;
     }
     fenCnt++;
-    if (fen[fenCnt] === "-") {
+    if (fen[fenCnt] != "-") {
         file = fen[fenCnt].charCodeAt() - 'a'.charCodeAt();
         rank = fen[fenCnt + 1].charCodeAt() - "1".charCodeAt();
         console.log('fen[fenCnt]:' + fen[fenCnt] + ' file:' + file + ' rank:' + rank);
